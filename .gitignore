@@ -1,0 +1,11 @@
+# Virtual environment
+venv/
+env/
+calculator_env/
+
+# Environment variables
+.env
+
+# Python cache
+__pycache__/
+*.pyc

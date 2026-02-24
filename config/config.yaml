@@ -1,0 +1,5 @@
+llm:
+  ollama:
+    provider : "ollama"
+    model_name: "gpt-oss:120b"
+    base_url : "https://ollama.com/v1"
