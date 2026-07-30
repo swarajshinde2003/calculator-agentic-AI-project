@@ -1,42 +1,20 @@
 from langchain.tools import tool
+from functools import reduce
+import operator
+from tools.number_parser import parse_numbers, fmt
 
-# Multiplication Tool
+
 @tool
 def multiply_numbers(inputs: str) -> dict:
     """
-    Extracts numbers from a string and calculates their product.
+    Multiplies all numbers found in the input text.
+    Supports integers, decimals, and negative values.
 
-    Parameters:
-    - inputs (str): A string containing numbers separated by spaces, commas, or other delimiters.
-
-    Returns:
-    - dict: A dictionary with the key "result" containing the product of the numbers.
-
-    Example Input:
-    "2, 3, 4"
-
-    Example Output:
-    {"result": 24}
-
-    Notes:
-    - If no numbers are found, the result defaults to 1 (neutral element for multiplication).
+    Example Input:  "Multiply 3, 4, and 5"
+    Example Output: {"result": "60"}
     """
-    # Extract numbers from the string
-    numbers = [int(num) for num in inputs.replace(",", "").split() if num.isdigit()]
-    print(numbers)
-
-    # If no numbers are found, return 1
+    numbers = parse_numbers(inputs)
     if not numbers:
-        return {"result": 1}
-
-    # Calculate the product of the numbers
-    result = 1
-    for num in numbers:
-        result *= num
-        print(num)
-
-    return {"result": result}
-
-
-# text = "multiply numbers 10 , 20 "
-# print(multiply_numbers.invoke(text))
+        return {"error": "No numbers found. Please provide numbers to multiply."}
+    result = reduce(operator.mul, numbers, 1.0)
+    return {"result": fmt(result)}

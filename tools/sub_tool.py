@@ -1,46 +1,23 @@
 from langchain.tools import tool
+from tools.number_parser import parse_numbers, fmt
+
 
 @tool
 def subtract_numbers(inputs: str) -> dict:
     """
-    Extract integers from a text string and subtract them sequentially.
+    Subtracts numbers found in the input text left-to-right  (n1 - n2 - n3 ...).
+    Supports integers, decimals, and negative values.
 
-    The function reads a string containing numbers mixed with words or symbols,
-    extracts all valid integers, and performs subtraction in order:
-    
-        result = n1 - n2 - n3 - ...
-        
-    Parameters:
-    ----------
-    inputs : str
-        A string containing integers separated by spaces, commas, or text.
-        
-    Returns:
-    -------
-    dict
-        A dictionary with key:
-        - "result": int — the subtraction result.
-
-    Examples:
-    ---------
-    Input:
-        "10 20 30 and four"
-    Output:
-        {"result": -40}
-    Notes:
-    ------
-    - Non-numeric words are ignored.
-    - If only one number is found, it is returned as-is.
-    - If no numbers are found, the result is 0.
+    Example Input:  "Subtract 5 and 3 from 20"  →  20 - 5 - 3
+    Example Output: {"result": "12"}
     """
-    numbers = [int(num) for num in inputs.replace(",", "").split() if num.isdigit()]
-
+    numbers = parse_numbers(inputs)
     if not numbers:
-        return {"result": 0}
-
+        return {"error": "No numbers found. Please provide numbers to subtract."}
+    if len(numbers) == 1:
+        return {"result": fmt(numbers[0])}
     result = numbers[0]
-    for num in numbers[1:]:
-        result -= num
-
-    return {"result": result}
+    for n in numbers[1:]:
+        result -= n
+    return {"result": fmt(result)}
 

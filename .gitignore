@@ -1,10 +1,10 @@
 # Virtual environment
 venv/
-env/
+# env/
 calculator_env/
 
 # Environment variables
-.env
+# .env
 
 # Python cache
 __pycache__/

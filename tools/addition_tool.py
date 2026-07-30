@@ -1,27 +1,17 @@
 from langchain.tools import tool
-import re
+from tools.number_parser import parse_numbers, fmt
+
+
 @tool
-def add_numbers(inputs : str):
+def add_numbers(inputs: str) -> dict:
     """
-    Adds a list of numbers provided in the input string.
-    Parameters:
-    - inputs (str): 
-    string, it should contain numbers that can be extracted and summed.
-    Returns:
-    - dict: A dictionary with a single key "result" containing the sum of the numbers.
-    Example Input:
-    "Add the numbers 10, 20, and 30."
-    Example Output:
-    {"result": 60}
+    Adds all numbers found in the input text.
+    Supports integers, decimals, and negative values.
+
+    Example Input:  "Add 10.5, -3, and 20"
+    Example Output: {"result": "27.5"}
     """
-    # Use regular expressions to extract all numbers from the input
-    numbers = [int(num) for num in re.findall(r'\d+', inputs)]
-    # numbers = [int(x) for x in inputs.replace(",", "").split() if x.isdigit()]
-    
-    result  = sum(numbers)
-    return {"result" : result}
-# print("Name: \n", add_numbers.name)
-# print("Description: \n", add_numbers.description) 
-# print("Args: \n", add_numbers.args) 
-# test_input = "what is the sum between 10, 20 and 30 " 
-# print(add_numbers.invoke(test_input))  # Example
+    numbers = parse_numbers(inputs)
+    if not numbers:
+        return {"error": "No numbers found. Please provide numbers to add."}
+    return {"result": fmt(sum(numbers))}

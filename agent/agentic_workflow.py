@@ -5,6 +5,7 @@ from prompt_library.prompt import SYSTEM_PROMPT
 from tools.addition_tool import add_numbers
 from tools.mul_tool import multiply_numbers
 from tools.sub_tool import subtract_numbers
+from tools.div_tool import divide_numbers
 
 
 class GraphBuilder:
@@ -13,9 +14,10 @@ class GraphBuilder:
         self.llm = self.model_loader.load_llm()
 
         self.tools = [
-            multiply_numbers,
             add_numbers,
-            subtract_numbers
+            subtract_numbers,
+            multiply_numbers,
+            divide_numbers,
         ]
 
         self.llm_with_tools = self.llm.bind_tools(self.tools)
@@ -35,6 +37,5 @@ class GraphBuilder:
         graph.add_edge(START, "agent")
         graph.add_conditional_edges("agent", tools_condition)
         graph.add_edge("tools", "agent")
-        graph.add_edge("agent", END)
 
-        return graph.compile()   # ✅ FIXED
+        return graph.compile()
